@@ -44,14 +44,14 @@
       function  CatItem(props) {
         return (
           <li>
-          <img src="{props.img}"/>
+          <img src={props.img} style={{with:"150px", border:"1px solid red"}}/>
           </li>
         );
       };
 
     function Favorites() {
       return (
-        <ul class="favorites">
+        <ul className="favorites">
           <CatItem img="https://cataas.com//cat/5e9970351b7a400011744233/says/inflearn"/>
           <CatItem img="https://cataas.com/cat/595f280b557291a9750ebf65/says/JavaScript"/>
         </ul>
@@ -59,14 +59,22 @@
       }
 
     const MainCard = (props) => {
+      function handleHeartClick() {
+        console.log("하트 눌렀음");
+      }
+
+      function handleMouseOver() {
+        console.log("하트 스쳐 지나감");
+      }
+
       return (
-        <div class="main-card">
+        <div className="main-card">
         <img
           src={props.img}
           alt="고양이"
           width="400"
         />
-        <button>🤍</button>
+        <button onClick={handleHeartClick} onMouseOver={handleMouseOver}>🤍</button>
         </div>
       );
     }
@@ -83,8 +91,21 @@
     }
 
     const Form = () => {
+      const [counter,setCounter] = React.useState(1);
+      //const counterState = React.useState(1);
+      //const counter = counterState[0];
+      //const setCounter = counterState[1];
+
+      console.log("카운터" + counter);
+
+      function handleFormSubmit(event) {
+        event.preventDefault(); //html기본동작이 form 전송 시 refresh => 이걸 써줌으로써 이벤트 기본동작 정지
+        console.log("폼 전송됨");
+        setCounter(counter+1);
+      }
+
       return (
-        <form>
+        <form onSubmit={handleFormSubmit}>
         <input type="text" name="name" placeholder="영어 대사를 입력해주세요" />
         <button type="submit">생성</button>
         </form>
