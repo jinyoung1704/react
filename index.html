@@ -28,13 +28,6 @@
   </style>
   <body>
     <div id="app"></div>
-    <h1>1번째 고양이 가라사대2</h1>
-    <form>
-      <input type="text" name="name" placeholder="영어 대사를 입력해주세요" />
-      <button type="submit">생성</button>
-    </form>
-    
-
     
     <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
@@ -66,14 +59,25 @@
       <button>🤍</button>
     </div>
     );
-    dd
+    
+    const hTag = (
+      <h1>1번째 고양이 가라사대2</h1>
+    );
+
+    const formTag = (
+      <form>
+      <input type="text" name="name" placeholder="영어 대사를 입력해주세요" />
+      <button type="submit">생성</button>
+      </form>
+    );
       const app  = (
         <div>
-        
-        {mainCard} 
-        {favorites} 
+          {mainCard} 
+          {favorites} 
+          {hTag} 
+          {formTag} 
         </div> 
-      )
+      );
       const 여기다그려 = document.querySelector('#app');
       ReactDOM.render(app,여기다그려);
     </script>
