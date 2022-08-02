@@ -90,19 +90,8 @@
       );
     }
 
-    const Form = () => {
-      const [counter,setCounter] = React.useState(1);
-      //const counterState = React.useState(1);
-      //const counter = counterState[0];
-      //const setCounter = counterState[1];
+    const Form = ({handleFormSubmit}) => {
 
-      console.log("카운터" + counter);
-
-      function handleFormSubmit(event) {
-        event.preventDefault(); //html기본동작이 form 전송 시 refresh => 이걸 써줌으로써 이벤트 기본동작 정지
-        console.log("폼 전송됨");
-        setCounter(counter+1);
-      }
 
       return (
         <form onSubmit={handleFormSubmit}>
@@ -111,18 +100,40 @@
         </form>
       );
     }
-    
-      const app  = (
+
+    const App = () => {
+      const CAT1 = "https://cataas.com/cat/60b73094e04e18001194a309/says/react";
+      const CAT2 = "https://cataas.com//cat/5e9970351b7a400011744233/says/inflearn";
+      const CAT3 = "https://cataas.com/cat/595f280b557291a9750ebf65/says/JavaScript"; 
+
+      const [counter,setCounter] = React.useState(1);
+      const [mainCatImg,setImg] = React.useState(CAT1); //초기값 
+      //const counterState = React.useState(1);
+      //const counter = counterState[0];
+      //const setCounter = counterState[1];
+      console.log("카운터",counter);
+
+      //생성을 눌렀을 때 실행 함수
+      function handleFormSubmit(event) {
+        event.preventDefault(); //html기본동작이 form 전송 시 refresh => 이걸 써줌으로써 이벤트 기본동작 정지
+        console.log("폼 전송됨");
+        setCounter(counter+1);
+        setImg(CAT2); //캣2 이미지로 바꿈
+      }
+
+      return (
         <div>
-          <MainCard img="https://cataas.com/cat/60b73094e04e18001194a309/says/react"/> 
+          <Form handleFormSubmit={handleFormSubmit}/>
+          <MainCard img={mainCatImg}/> 
           <Favorites/>
-          <Title>1번째 고양이 가라사대</Title>
-          <Title>2번째 고양이 가라사대</Title>
-          <Form />
+          <Title>{counter}번째 고양이 가라사대</Title>
+          
         </div> 
       );
+    }
+    
       const 여기다그려 = document.querySelector('#app');
-      ReactDOM.render(app,여기다그려);
+      ReactDOM.render(<App />,여기다그려);
     </script>
   </body>
 </html>
