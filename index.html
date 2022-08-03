@@ -39,6 +39,14 @@
     ></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script type="text/babel">
+      const jsonLocalStorage = {
+        setItem: (key, value) => {
+          localStorage.setItem(key, JSON.stringify(value));
+        },
+        getItem: (key) => {
+          return JSON.parse(localStorage.getItem(key));
+        },
+      };
       console.log("야옹");
 
       const catItem = (
@@ -141,9 +149,13 @@
         const CAT3 =
           "https://cataas.com/cat/595f280b557291a9750ebf65/says/JavaScript";
 
-        const [counter, setCounter] = React.useState(1);
+        const [counter, setCounter] = React.useState(
+          Number(jsonLocalStorage.getItem("counter"))
+        );
         const [mainCatImg, setImg] = React.useState(CAT1); //초기값
-        const [favorites, setFavorites] = React.useState([CAT1, CAT2]);
+        const [favorites, setFavorites] = React.useState(
+          jsonLocalStorage.getItem("favorites") || [] //없을 시는 빈 배열 초기화
+        );
         //const counterState = React.useState(1);
         //const counter = counterState[0];
         //const setCounter = counterState[1];
@@ -154,20 +166,24 @@
           //event.preventDefault(); //html기본동작이 form 전송 시 refresh => 이걸 써줌으로써 이벤트 기본동작 정지
           //console.log("폼 전송됨");
           setImg(CAT2); //캣2 이미지로 바꿈
-          setCounter(counter + 1);
+          const nextCount = counter + 1;
+          setCounter(nextCount);
+          jsonLocalStorage.setItem("counter", nextCount);
         }
 
         function handleHeartClick() {
           //console.log("하트 눌렀음");
-          setFavorites([...favorites, CAT3]); //...은 기존 배열 CAT1,CAT2를 펼친다음에 CAT3를 추가한다는 의미
+          const nextFavorites = [...favorites, mainCatImg]; //...은 기존 배열 CAT1,CAT2를 펼친다음에 CAT3를 추가한다는 의미
+          setFavorites(nextFavorites);
+          jsonLocalStorage.setItem("favorites", nextFavorites);
         }
 
         return (
           <div>
+            <Title>{counter}번째 고양이 가라사대</Title>
             <Form updateMainCat={updateMainCat} />
             <MainCard img={mainCatImg} onHeartClick={handleHeartClick} />
             <Favorites favorites={favorites} />
-            <Title>{counter}번째 고양이 가라사대</Title>
           </div>
         );
       };
