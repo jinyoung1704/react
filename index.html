@@ -162,16 +162,17 @@
         const CAT3 =
           "https://cataas.com/cat/595f280b557291a9750ebf65/says/JavaScript";
 
-        const [counter, setCounter] = React.useState(
-          Number(jsonLocalStorage.getItem("counter"))
-        );
+        const [counter, setCounter] = React.useState(() => {
+          return jsonLocalStorage.getItem("counter");
+        });
 
-        const counterTitle = counter == 0 ? "" : counter + "번째 ";
+        const counterTitle = counter == null ? "" : counter + "번째 ";
 
         const [mainCatImg, setMainCat] = React.useState(CAT1); //초기값
-        const [favorites, setFavorites] = React.useState(
-          jsonLocalStorage.getItem("favorites") || [] //없을 시는 빈 배열 초기화
-        );
+        const [favorites, setFavorites] = React.useState(() => {
+          return jsonLocalStorage.getItem("favorites") || [];
+        });
+
         //const counterState = React.useState(1);
         //const counter = counterState[0];
         //const setCounter = counterState[1];
@@ -196,9 +197,12 @@
           const newCat = await fetchCat(value);
 
           setMainCat(newCat); //캣2 이미지로 바꿈
-          const nextCount = counter + 1;
-          setCounter(nextCount);
-          jsonLocalStorage.setItem("counter", nextCount);
+
+          setCounter((prev) => {
+            const nextCounter = prev + 1;
+            jsonLocalStorage.setItem("counter", nextCounter);
+            return nextCounter;
+          });
         }
 
         function handleHeartClick() {
