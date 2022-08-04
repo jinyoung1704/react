@@ -47,7 +47,15 @@
           return JSON.parse(localStorage.getItem(key));
         },
       };
-      console.log("야옹");
+
+      const fetchCat = async (text) => {
+        const OPEN_API_DOMAIN = "https://cataas.com";
+        const response = await fetch(
+          `${OPEN_API_DOMAIN}/cat/says/${text}?json=true`
+        );
+        const responseJson = await response.json();
+        return `${OPEN_API_DOMAIN}/${responseJson.url}`;
+      };
 
       const catItem = (
         <li>
@@ -67,6 +75,10 @@
       }
 
       function Favorites({ favorites }) {
+        if (favorites.length == 0) {
+          return <div>사진 위 하트를 눌러 고양이 사진을 저장해봐요!</div>;
+        }
+
         return (
           <ul className="favorites">
             {favorites.map(
@@ -80,11 +92,12 @@
         );
       }
 
-      const MainCard = ({ img, onHeartClick }) => {
+      const MainCard = ({ img, onHeartClick, alreadyFavorites }) => {
+        const heartIcon = alreadyFavorites ? "💖" : "🤍";
         return (
           <div className="main-card">
             <img src={img} alt="고양이" width="400" />
-            <button onClick={onHeartClick}>🤍</button>
+            <button onClick={onHeartClick}>{heartIcon}</button>
           </div>
         );
       };
@@ -123,7 +136,7 @@
             setErrorMessage("빈 값으로 만들 수 없습니다.");
             return;
           }
-          updateMainCat();
+          updateMainCat(value);
         }
 
         return (
@@ -152,7 +165,10 @@
         const [counter, setCounter] = React.useState(
           Number(jsonLocalStorage.getItem("counter"))
         );
-        const [mainCatImg, setImg] = React.useState(CAT1); //초기값
+
+        const counterTitle = counter == 0 ? "" : counter + "번째 ";
+
+        const [mainCatImg, setMainCat] = React.useState(CAT1); //초기값
         const [favorites, setFavorites] = React.useState(
           jsonLocalStorage.getItem("favorites") || [] //없을 시는 빈 배열 초기화
         );
@@ -161,11 +177,25 @@
         //const setCounter = counterState[1];
         console.log("카운터", counter);
 
+        async function setInitialCat() {
+          const newCat = await fetchCat("First cat");
+          setMainCat(newCat);
+        }
+
+        const alreadyFavorites = favorites.includes(mainCatImg);
+
+        React.useEffect(() => {
+          setInitialCat();
+        }, []);
+        //useEffect는 함수를 내가 제한한 상황에서만 호출되도록 제어할 수 있음
+        //[] 은 맨처음 생성되었을때만 호출되도록 하기 위해 사용
+
         //생성을 눌렀을 때 실행 함수
-        function updateMainCat(event) {
+        async function updateMainCat(value) {
           //event.preventDefault(); //html기본동작이 form 전송 시 refresh => 이걸 써줌으로써 이벤트 기본동작 정지
-          //console.log("폼 전송됨");
-          setImg(CAT2); //캣2 이미지로 바꿈
+          const newCat = await fetchCat(value);
+
+          setMainCat(newCat); //캣2 이미지로 바꿈
           const nextCount = counter + 1;
           setCounter(nextCount);
           jsonLocalStorage.setItem("counter", nextCount);
@@ -180,9 +210,13 @@
 
         return (
           <div>
-            <Title>{counter}번째 고양이 가라사대</Title>
+            <Title>{counterTitle}고양이 가라사대</Title>
             <Form updateMainCat={updateMainCat} />
-            <MainCard img={mainCatImg} onHeartClick={handleHeartClick} />
+            <MainCard
+              img={mainCatImg}
+              onHeartClick={handleHeartClick}
+              alreadyFavorites={alreadyFavorites}
+            />
             <Favorites favorites={favorites} />
           </div>
         );
